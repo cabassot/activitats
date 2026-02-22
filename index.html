@@ -3,47 +3,147 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Activitats de l'Associació Cultural</title>
+  <title>Associació Cultural Bassot – Activitats</title>
   <style>
+    :root {
+      --color-primari: #8d2b2b; /* Un granat elegant */
+      --color-secundari: #f4e7d3; /* Crema suau per al fons */
+      --text-fosc: #333;
+      --text-clar: #666;
+    }
+
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      margin: 0; padding: 0; background: #f5f5f5; color: #222;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0; padding: 0;
+      background-color: var(--color-secundari);
+      color: var(--text-fosc);
+      line-height: 1.6;
     }
+
     header {
-      background: #283593; color: white; padding: 20px; text-align: center;
+      background: linear-gradient(135deg, #8d2b2b 0%, #5a1a1a 100%);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    header p {
+      margin-top: 10px;
+      font-weight: 300;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
     main {
-      max-width: 900px; margin: 30px auto; padding: 0 16px;
+      max-width: 1000px;
+      margin: -40px auto 50px; /* Sobreposat al header */
+      padding: 0 20px;
     }
+
+    #lista-actividades {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+    }
+
     .actividad {
-      background: white; padding: 18px 20px; margin-bottom: 16px; border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; gap: 16px; align-items: flex-start;
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
     }
+
+    .actividad:hover {
+      transform: translateY(-5px);
+    }
+
     .actividad img {
-      width: 180px; height: 240px; object-fit: cover; border-radius: 10px; flex-shrink: 0;
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
     }
-    .contenido { flex: 1; }
-    .contenido h2 { margin: 0 0 8px; font-size: 1.3rem; color: #283593; }
+
+    .contenido {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
     .tag {
-      display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem;
-      background: #e3f2fd; color: #1565c0; margin-bottom: 8px;
+      align-self: flex-start;
+      background: var(--color-primari);
+      color: white;
+      font-size: 0.7rem;
+      padding: 4px 12px;
+      border-radius: 50px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      font-weight: bold;
     }
-    @media (max-width: 700px) {
-      .actividad { flex-direction: column; align-items: center; text-align: center; }
-      .actividad img { width: 100%; height: auto; max-height: 300px; }
-      .contenido { text-align: left; width: 100%; }
+
+    .contenido h2 {
+      margin: 0 0 10px;
+      font-size: 1.4rem;
+      color: var(--color-primari);
+      line-height: 1.2;
     }
-    .carregant { text-align: center; padding: 50px; font-style: italic; color: #666; }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text-clar);
+    }
+
+    .info-item strong {
+      margin-right: 5px;
+      color: var(--text-fosc);
+    }
+
+    .descripcion {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .carregant {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px;
+      font-size: 1.2rem;
+      color: var(--color-primari);
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.8rem; }
+      main { margin-top: 20px; }
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Activitats de l'Associació Cultural – 2026</h1>
+    <h1>Associació Cultural Bassot</h1>
+    <p>Cultura, territori i país</p>
   </header>
 
-  <main id="lista-actividades">
-    <p class="carregant">Carregant activitats...</p>
+  <main>
+    <div id="lista-actividades">
+      <p class="carregant">Buscant activitats a l'arxiu...</p>
+    </div>
   </main>
 
   <script>
@@ -53,7 +153,7 @@
       const llista = document.getElementById("lista-actividades");
       
       try {
-        const resposta = await fetch(URL_CSV + '&cacheignore=' + new Date().getTime());
+        const resposta = await fetch(URL_CSV + '&v=' + new Date().getTime());
         const text = await resposta.text();
         
         const línies = text.split(/\r?\n/).filter(line => line.trim() !== "");
@@ -66,57 +166,49 @@
         avui.setHours(0, 0, 0, 0);
 
         files.forEach(fila => {
-          // Separem per comes respectant les cometes
           const c = fila.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
           if (c.length < 5) return;
 
           const neteja = (s) => (s || "").replace(/^"|"$/g, '').trim();
 
           const titol = neteja(c[0]);
-          const dataOriginal = neteja(c[1]); // Format: 12/06/2026
+          const dataOriginal = neteja(c[1]); 
           const hora = neteja(c[2]);
           const lloc = neteja(c[3]);
           const tipus = neteja(c[4]);
           const desc = neteja(c[5]);
           const img = neteja(c[6]);
 
-          // PROCESSAR DATA (dia/mes/any)
           const parts = dataOriginal.split('/');
-          let dataObj;
-          if (parts.length === 3) {
-            // JavaScript necessita: any, mes (0-11), dia
-            dataObj = new Date(parts[2], parts[1] - 1, parts[0]);
-          } else {
-            dataObj = new Date(dataOriginal); // Per si de cas
-          }
+          let dataObj = parts.length === 3 ? new Date(parts[2], parts[1] - 1, parts[0]) : new Date(dataOriginal);
 
           if (!isNaN(dataObj) && dataObj >= avui) {
             hiHaEvents = true;
             const dataBonica = dataObj.toLocaleDateString("ca-ES", {
-              weekday: "long", day: "numeric", month: "long", year: "numeric"
+              weekday: "long", day: "numeric", month: "long"
             });
 
             llista.innerHTML += `
               <div class="actividad">
-                <img src="${img}" alt="${titol}" onerror="this.src='https://via.placeholder.com/180x240?text=Imatge'">
+                <img src="${img}" alt="${titol}" onerror="this.src='https://via.placeholder.com/400x250?text=Bassot+Cultura'">
                 <div class="contenido">
                   <span class="tag">${tipus}</span>
                   <h2>${titol}</h2>
-                  <p><strong>Data:</strong> ${dataBonica} ${hora ? "– " + hora : ""}</p>
-                  <p><strong>Lloc:</strong> ${lloc}</p>
-                  <p>${desc}</p>
+                  <div class="info-item"><strong>📅</strong> ${dataBonica} ${hora ? " a les " + hora : ""}</div>
+                  <div class="info-item"><strong>📍</strong> ${lloc}</div>
+                  <p class="descripcion">${desc}</p>
                 </div>
               </div>`;
           }
         });
 
         if (!hiHaEvents) {
-          llista.innerHTML = "<p style='text-align:center'>No hi ha pròximes activitats programades.</p>";
+          llista.innerHTML = "<p class='carregant'>Actualment no hi ha activitats programades. Torna prompte!</p>";
         }
 
       } catch (error) {
         console.error(error);
-        llista.innerHTML = "<p style='text-align:center; color:red;'>Error en connectar amb el Full de Càlcul.</p>";
+        llista.innerHTML = "<p class='carregant'>No s'ha pogut carregar l'agenda. Revisa la connexió.</p>";
       }
     }
 
