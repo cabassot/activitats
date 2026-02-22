@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>A.C. Bassot – Pròximes Activitats</title>
   <style>
-    /* Estil d'impremta artesanal / Risografia */
     :root {
-      --color-paper: #efede3; /* Fons crema de paper */
-      --color-tinta: #a32222; /* Roig d'impremta */
+      --color-paper: #efede3; 
+      --color-tinta: #a32222; 
       --vora: 2px solid var(--color-tinta);
     }
 
@@ -17,13 +16,11 @@
       background-color: var(--color-paper);
       color: var(--color-tinta);
       margin: 0; padding: 0;
-      /* Textura subtil de paper */
       background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
     }
 
     header {
       padding: 60px 20px 40px;
-      text-align: left;
       max-width: 1100px;
       margin: 0 auto;
     }
@@ -57,9 +54,7 @@
     .actividad {
       border: var(--vora);
       padding: 10px;
-      position: relative;
       background-color: rgba(255, 255, 255, 0.3);
-      /* Efecte de vora doble dibuixada */
       outline: 4px solid var(--color-paper);
       box-shadow: 0 0 0 6px var(--color-tinta);
       transition: transform 0.2s;
@@ -69,7 +64,6 @@
       transform: rotate(-1deg) scale(1.02);
     }
 
-    /* Filtre per a fer les fotos roges estil risografia */
     .img-container {
       width: 100%;
       height: 250px;
@@ -116,13 +110,12 @@
     .descripcion {
       margin-top: 15px;
       font-size: 0.85rem;
-      font-family: 'Courier New', Courier, monospace; /* Tipus màquina d'escriure */
+      font-family: 'Courier New', Courier, monospace;
       text-transform: none;
       line-height: 1.4;
       font-weight: normal;
     }
 
-    /* Modal / Lightbox */
     .modal {
       display: none;
       position: fixed;
@@ -135,7 +128,7 @@
     .modal img { 
       max-width: 90%; max-height: 90%; 
       border: 10px solid var(--color-paper);
-      filter: none; /* En gran es veu normal */
+      filter: none;
     }
 
     .carregant { font-size: 2rem; padding: 100px; }
@@ -160,7 +153,7 @@
   </main>
 
   <div id="modal-imatge" class="modal" onclick="this.style.display='none'">
-    <img id="img-gran" src="">
+    <img id="img-gran" src="" referrerpolicy="no-referrer">
   </div>
 
   <script>
@@ -209,7 +202,10 @@
             llista.innerHTML += `
               <div class="actividad">
                 <div class="img-container">
-                  <img src="${img}" onclick="obrirModal('${img}')" onerror="this.src='https://via.placeholder.com/400x400?text=BASSOT'">
+                  <img src="${img}" 
+                       referrerpolicy="no-referrer" 
+                       onclick="obrirModal('${img}')" 
+                       onerror="this.src='https://via.placeholder.com/400x400?text=BASSOT'">
                 </div>
                 <div class="contenido">
                   <span class="tag">${tipus}</span>
@@ -231,7 +227,8 @@
     }
 
     function obrirModal(src) {
-      document.getElementById('img-gran').src = src;
+      const imgGran = document.getElementById('img-gran');
+      imgGran.src = src;
       document.getElementById('modal-imatge').style.display = 'flex';
     }
 
