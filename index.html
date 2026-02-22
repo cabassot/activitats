@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activitats de l'Associació Cultural</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0; padding: 0; background: #f5f5f5; color: #222;
+    }
+    header {
+      background: #283593; color: white; padding: 20px; text-align: center;
+    }
+    main {
+      max-width: 900px; margin: 30px auto; padding: 0 16px;
+    }
+    .actividad {
+      background: white; padding: 18px 20px; margin-bottom: 16px; border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; gap: 16px; align-items: flex-start;
+    }
+    .actividad img {
+      width: 180px; height: 240px; object-fit: cover; border-radius: 10px; flex-shrink: 0;
+    }
+    .contenido { flex: 1; }
+    .contenido h2 { margin: 0 0 8px; font-size: 1.3rem; color: #283593; }
+    .tag {
+      display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem;
+      background: #e3f2fd; color: #1565c0; margin-bottom: 8px;
+    }
+    @media (max-width: 700px) {
+      .actividad { flex-direction: column; align-items: center; text-align: center; }
+      .actividad img { width: 100%; height: auto; max-height: 300px; }
+      .contenido { text-align: left; width: 100%; }
+    }
+    .carregant { text-align: center; padding: 50px; font-style: italic; color: #666; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Activitats de l'Associació Cultural – 2026</h1>
+  </header>
+
+  <main id="lista-actividades">
+    <p class="carregant">Carregant activitats...</p>
+  </main>
+
+  <script>
+    const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS0t4jgpE8jLzvMT2AXeuaoVwmTVuW4cMWEx547EUyrJ7NfAIogTqp-iNYPO-a0_uqcQoj9vvTnjkoX/pub?output=csv';
+
+    async function carregarActivitats() {
+      const llista = document.getElementById("lista-actividades");
+      
+      try {
+        const resposta = await fetch(URL_CSV + '&cacheignore=' + new Date().getTime());
+        const text = await resposta.text();
+        
+        const línies = text.split(/\r?\n/).filter(line => line.trim() !== "");
+        const files = línies.slice(1); 
+        
+        llista.innerHTML = "";
+        let hiHaEvents = false;
+
+        const avui = new Date();
+        avui.setHours(0, 0, 0, 0);
+
+        files.forEach(fila => {
+          // Separem per comes respectant les cometes
+          const c = fila.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+          if (c.length < 5) return;
+
+          const neteja = (s) => (s || "").replace(/^"|"$/g, '').trim();
+
+          const titol = neteja(c[0]);
+          const dataOriginal = neteja(c[1]); // Format: 12/06/2026
+          const hora = neteja(c[2]);
+          const lloc = neteja(c[3]);
+          const tipus = neteja(c[4]);
+          const desc = neteja(c[5]);
+          const img = neteja(c[6]);
+
+          // PROCESSAR DATA (dia/mes/any)
+          const parts = dataOriginal.split('/');
+          let dataObj;
+          if (parts.length === 3) {
+            // JavaScript necessita: any, mes (0-11), dia
+            dataObj = new Date(parts[2], parts[1] - 1, parts[0]);
+          } else {
+            dataObj = new Date(dataOriginal); // Per si de cas
+          }
+
+          if (!isNaN(dataObj) && dataObj >= avui) {
+            hiHaEvents = true;
+            const dataBonica = dataObj.toLocaleDateString("ca-ES", {
+              weekday: "long", day: "numeric", month: "long", year: "numeric"
+            });
+
+            llista.innerHTML += `
+              <div class="actividad">
+                <img src="${img}" alt="${titol}" onerror="this.src='https://via.placeholder.com/180x240?text=Imatge'">
+                <div class="contenido">
+                  <span class="tag">${tipus}</span>
+                  <h2>${titol}</h2>
+                  <p><strong>Data:</strong> ${dataBonica} ${hora ? "– " + hora : ""}</p>
+                  <p><strong>Lloc:</strong> ${lloc}</p>
+                  <p>${desc}</p>
+                </div>
+              </div>`;
+          }
+        });
+
+        if (!hiHaEvents) {
+          llista.innerHTML = "<p style='text-align:center'>No hi ha pròximes activitats programades.</p>";
+        }
+
+      } catch (error) {
+        console.error(error);
+        llista.innerHTML = "<p style='text-align:center; color:red;'>Error en connectar amb el Full de Càlcul.</p>";
+      }
+    }
+
+    carregarActivitats();
+  </script>
+
+</body>
+</html>
