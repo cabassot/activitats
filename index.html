@@ -3,133 +3,104 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Associació Cultural Bassot – Activitats</title>
+  <title>Associació Cultural Bassot – Pròximes Activitats</title>
   <style>
     :root {
-      --color-primari: #8d2b2b; /* Un granat elegant */
-      --color-secundari: #f4e7d3; /* Crema suau per al fons */
-      --text-fosc: #333;
-      --text-clar: #666;
+      --color-roig: #e60000; /* Roig més viu */
+      --color-roig-fosc: #b30000;
+      --color-fons: #fcfcfc;
+      --text-fosc: #1a1a1a;
+      --text-clar: #555;
     }
 
     body {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Segoe UI', Roboto, sans-serif;
       margin: 0; padding: 0;
-      background-color: var(--color-secundari);
+      background-color: var(--color-fons);
       color: var(--text-fosc);
-      line-height: 1.6;
     }
 
     header {
-      background: linear-gradient(135deg, #8d2b2b 0%, #5a1a1a 100%);
+      background: var(--color-roig);
       color: white;
-      padding: 60px 20px;
+      padding: 50px 20px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      border-bottom: 5px solid var(--color-roig-fosc);
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    header p {
-      margin-top: 10px;
-      font-weight: 300;
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
+    header h1 { margin: 0; font-size: 2.2rem; text-transform: uppercase; }
+    header p { margin: 10px 0 0; font-size: 1.2rem; font-weight: 300; }
 
     main {
-      max-width: 1000px;
-      margin: -40px auto 50px; /* Sobreposat al header */
+      max-width: 1100px;
+      margin: 40px auto;
       padding: 0 20px;
     }
 
     #lista-actividades {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
     }
 
     .actividad {
       background: white;
-      border-radius: 15px;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       display: flex;
       flex-direction: column;
-    }
-
-    .actividad:hover {
-      transform: translateY(-5px);
+      border: 1px solid #eee;
     }
 
     .actividad img {
       width: 100%;
-      height: 250px;
+      height: 220px;
       object-fit: cover;
+      cursor: zoom-in; /* Indica que es pot ampliar */
+      transition: opacity 0.3s;
     }
 
-    .contenido {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
+    .actividad img:hover { opacity: 0.9; }
+
+    .contenido { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
 
     .tag {
       align-self: flex-start;
-      background: var(--color-primari);
+      background: var(--color-roig);
       color: white;
-      font-size: 0.7rem;
-      padding: 4px 12px;
-      border-radius: 50px;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 4px;
       margin-bottom: 12px;
-      text-transform: uppercase;
       font-weight: bold;
     }
 
-    .contenido h2 {
-      margin: 0 0 10px;
-      font-size: 1.4rem;
-      color: var(--color-primari);
-      line-height: 1.2;
+    .contenido h2 { margin: 0 0 10px; font-size: 1.4rem; color: var(--color-roig); }
+
+    .info-item { display: flex; align-items: center; margin-bottom: 6px; font-size: 0.95rem; }
+    .info-item strong { margin-right: 8px; font-size: 1.1rem; }
+
+    .descripcion { margin-top: 12px; font-size: 0.95rem; color: var(--text-clar); line-height: 1.5; }
+
+    /* Estils per al Modal (Imatge gran) */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      justify-content: center; align-items: center;
+      cursor: zoom-out;
     }
 
-    .info-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 8px;
-      font-size: 0.9rem;
-      color: var(--text-clar);
-    }
+    .modal img { max-width: 90%; max-height: 90%; border-radius: 5px; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
 
-    .info-item strong {
-      margin-right: 5px;
-      color: var(--text-fosc);
-    }
-
-    .descripcion {
-      margin-top: 10px;
-      font-size: 0.95rem;
-      color: #555;
-    }
-
-    .carregant {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 50px;
-      font-size: 1.2rem;
-      color: var(--color-primari);
-    }
+    .carregant { grid-column: 1 / -1; text-align: center; padding: 100px; font-style: italic; }
 
     @media (max-width: 600px) {
-      header h1 { font-size: 1.8rem; }
-      main { margin-top: 20px; }
+      header h1 { font-size: 1.6rem; }
+      #lista-actividades { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -137,17 +108,31 @@
 
   <header>
     <h1>Associació Cultural Bassot</h1>
-    <p>Cultura, territori i país</p>
+    <p>Pròximes activitats</p>
   </header>
 
   <main>
     <div id="lista-actividades">
-      <p class="carregant">Buscant activitats a l'arxiu...</p>
+      <p class="carregant">Carregant l'agenda de l'A.C. Bassot...</p>
     </div>
   </main>
 
+  <div id="modal-imatge" class="modal" onclick="this.style.display='none'">
+    <img id="img-gran" src="" alt="Imatge ampliada">
+  </div>
+
   <script>
     const URL_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS0t4jgpE8jLzvMT2AXeuaoVwmTVuW4cMWEx547EUyrJ7NfAIogTqp-iNYPO-a0_uqcQoj9vvTnjkoX/pub?output=csv';
+
+    // Funció per netejar els segons de l'hora (19:00:00 -> 19:00)
+    function formatarHora(horaStr) {
+      if (!horaStr) return "";
+      const parts = horaStr.split(':');
+      if (parts.length >= 2) {
+        return parts[0] + ':' + parts[1]; // Agafa només hores i minuts
+      }
+      return horaStr;
+    }
 
     async function carregarActivitats() {
       const llista = document.getElementById("lista-actividades");
@@ -161,7 +146,6 @@
         
         llista.innerHTML = "";
         let hiHaEvents = false;
-
         const avui = new Date();
         avui.setHours(0, 0, 0, 0);
 
@@ -173,12 +157,15 @@
 
           const titol = neteja(c[0]);
           const dataOriginal = neteja(c[1]); 
-          const hora = neteja(c[2]);
+          const horaRaw = neteja(c[2]);
           const lloc = neteja(c[3]);
           const tipus = neteja(c[4]);
           const desc = neteja(c[5]);
           const img = neteja(c[6]);
 
+          const horaNeta = formatarHora(horaRaw);
+
+          // Processar data (dia/mes/any)
           const parts = dataOriginal.split('/');
           let dataObj = parts.length === 3 ? new Date(parts[2], parts[1] - 1, parts[0]) : new Date(dataOriginal);
 
@@ -190,11 +177,12 @@
 
             llista.innerHTML += `
               <div class="actividad">
-                <img src="${img}" alt="${titol}" onerror="this.src='https://via.placeholder.com/400x250?text=Bassot+Cultura'">
+                <img src="${img}" alt="${titol}" onclick="obrirModal('${img}')" onerror="this.src='https://via.placeholder.com/400x250?text=A.C.+Bassot'">
                 <div class="contenido">
                   <span class="tag">${tipus}</span>
                   <h2>${titol}</h2>
-                  <div class="info-item"><strong>📅</strong> ${dataBonica} ${hora ? " a les " + hora : ""}</div>
+                  <div class="info-item"><strong>📅</strong> ${dataBonica}</div>
+                  <div class="info-item"><strong>🕒</strong> ${horaNeta ? horaNeta + " h" : "Hora a confirmar"}</div>
                   <div class="info-item"><strong>📍</strong> ${lloc}</div>
                   <p class="descripcion">${desc}</p>
                 </div>
@@ -203,13 +191,18 @@
         });
 
         if (!hiHaEvents) {
-          llista.innerHTML = "<p class='carregant'>Actualment no hi ha activitats programades. Torna prompte!</p>";
+          llista.innerHTML = "<p class='carregant'>No hi ha activitats programades hores d'ara.</p>";
         }
 
       } catch (error) {
-        console.error(error);
-        llista.innerHTML = "<p class='carregant'>No s'ha pogut carregar l'agenda. Revisa la connexió.</p>";
+        llista.innerHTML = "<p class='carregant'>Error en carregar les dades de l'Excel.</p>";
       }
+    }
+
+    // Funcions per al Lightbox
+    function obrirModal(src) {
+      document.getElementById('img-gran').src = src;
+      document.getElementById('modal-imatge').style.display = 'flex';
     }
 
     carregarActivitats();
